@@ -41,6 +41,9 @@
             border-radius: 5px;
             background-color: #fff;
         }
+        .linked-list-item.highlight {
+            background-color: #ffeb3b;
+        }
         .hash-operation {
             margin-top: 10px;
             font-weight: bold;
@@ -70,6 +73,7 @@
                             <button type="button" class="btn btn-primary" onclick="addElement()">Agregar</button>
                             <button type="button" class="btn btn-warning" onclick="updateElement()">Modificar</button>
                             <button type="button" class="btn btn-danger" onclick="removeElement()">Eliminar</button>
+                            <button type="button" class="btn btn-info" onclick="searchElement()">Buscar</button>
                         </div>
                         <div id="hashOperation" class="hash-operation"></div>
                     </div>
@@ -138,6 +142,23 @@
                 this.add(key, phone, age);
             }
 
+            search(key) {
+                const index = this.hash(key);
+                document.getElementById('hashOperation').innerText = `Hashing "${key}" => ${index}`;
+                this.printTable();
+                let found = false;
+                for (let entry of this.table[index]) {
+                    if (entry.key === key) {
+                        document.getElementById(`entry-${index}-${entry.key}`).classList.add('highlight');
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    alert('Elemento no encontrado.');
+                }
+            }
+
             printTable() {
                 const hashTableBody = document.getElementById('hashTable');
                 hashTableBody.innerHTML = ''; // Limpiar la tabla
@@ -147,9 +168,9 @@
                         <td class="index">${i}</td>
                         <td>
                             <ul class="linked-list">`;
-                    
+
                     for (let entry of this.table[i]) {
-                        row += `<li class="linked-list-item">${entry.key} - Tel: ${entry.phone}, Edad: ${entry.age}</li>`;
+                        row += `<li id="entry-${i}-${entry.key}" class="linked-list-item">${entry.key} - Tel: ${entry.phone}, Edad: ${entry.age}</li>`;
                     }
 
                     row += `</ul>
@@ -179,6 +200,11 @@
             const phone = document.getElementById('phone').value;
             const age = document.getElementById('age').value;
             hashTable.update(key, phone, age);
+        }
+
+        function searchElement() {
+            const key = document.getElementById('key').value;
+            hashTable.search(key);
         }
 
         // Inicializar la tabla vacía
